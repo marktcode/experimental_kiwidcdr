@@ -1,0 +1,8 @@
+#!/bin/sh
+cd ~/Gather
+killall tc_mrsdcdr pertecs framerec kiwi_nc.py spectrum3 2> /dev/null
+./framerec 9226 | ./pertecs -c displayspectrum -rate 10000 2>/dev/null &
+./framerec 9224 | ./pertecs -c viewiq -rate 4800 2>/dev/null  &
+./kiwi_nc.py -s 123.255.61.168 -p 8073 -f 7009.520 -m iq | ./KiwiSDR_dcdr -r 8 -t 6 -w 25 | ./spectrum3 -h 127.0.0.1 -r -70 -g -1000 &
+./tc_mrsdcdr 
+

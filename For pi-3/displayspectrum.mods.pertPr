@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>Label</key>
+		<string>MATH_0</string>
+		<key>Type</key>
+		<string>MATH</string>
+		<key>mod_No</key>
+		<string>0</string>
+	</dict>
+	<dict>
+		<key>Label</key>
+		<string>MATH_1</string>
+		<key>Type</key>
+		<string>MATH</string>
+		<key>mod_No</key>
+		<string>1</string>
+	</dict>
+	<dict>
+		<key>Buffer_size</key>
+		<string>479</string>
+		<key>Label</key>
+		<string>TRACE_0</string>
+		<key>P_Label 1</key>
+		<string>time-axis [xyz][-]</string>
+		<key>P_Label 2</key>
+		<string>colour [rgbcmyWB]</string>
+		<key>P_Label 3</key>
+		<string>[en][dis]able</string>
+		<key>P_Label 4</key>
+		<string>[static][dynamic]</string>
+		<key>P_Label 5</key>
+		<string>line type [-_.|tT]</string>
+		<key>P_Label 6</key>
+		<string>line weight</string>
+		<key>P_float 1</key>
+		<string>-</string>
+		<key>P_float 2</key>
+		<string>blue</string>
+		<key>P_float 3</key>
+		<string>enable</string>
+		<key>P_float 4</key>
+		<string>static</string>
+		<key>P_float 5</key>
+		<string>-</string>
+		<key>P_float 6</key>
+		<string>1.0</string>
+		<key>Type</key>
+		<string>TRACE</string>
+		<key>mod_No</key>
+		<string>2</string>
+	</dict>
+	<dict>
+		<key>Buffer_size</key>
+		<string>479</string>
+		<key>Label</key>
+		<string>TRACE_1</string>
+		<key>P_Label 1</key>
+		<string>time-axis [xyz][-]</string>
+		<key>P_Label 2</key>
+		<string>colour [rgbcmyWB]</string>
+		<key>P_Label 3</key>
+		<string>[en][dis]able</string>
+		<key>P_Label 4</key>
+		<string>[static][dynamic]</string>
+		<key>P_Label 5</key>
+		<string>line type [-_.|tT]</string>
+		<key>P_Label 6</key>
+		<string>line weight</string>
+		<key>P_float 1</key>
+		<string>-</string>
+		<key>P_float 2</key>
+		<string>magenta</string>
+		<key>P_float 3</key>
+		<string>enable</string>
+		<key>P_float 4</key>
+		<string>static</string>
+		<key>P_float 5</key>
+		<string>-</string>
+		<key>P_float 6</key>
+		<string>1.0</string>
+		<key>Type</key>
+		<string>TRACE</string>
+		<key>mod_No</key>
+		<string>3</string>
+	</dict>
+	<dict>
+		<key>Label</key>
+		<string>SCOPE</string>
+		<key>Type</key>
+		<string>SCOPE</string>
+		<key>mod_No</key>
+		<string>4</string>
+	</dict>
+	<dict>
+		<key>Label</key>
+		<string>SYSTEM</string>
+		<key>Type</key>
+		<string>SYSTEM</string>
+		<key>mod_No</key>
+		<string>5</string>
+	</dict>
+</array>
+</plist>
