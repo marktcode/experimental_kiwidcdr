@@ -168,7 +168,7 @@
 		<key>ID_reset_hold</key>
 		<string>set-hold</string>
 		<key>Input_channel_no</key>
-		<string>3</string>
+		<string>4</string>
 		<key>Input_label</key>
 		<string>INPUT</string>
 		<key>Input_outputname</key>
@@ -260,7 +260,7 @@
 		<key>Rate</key>
 		<string>0</string>
 		<key>Scope_channel_no</key>
-		<string>3</string>
+		<string>5</string>
 		<key>Scope_mod_label</key>
 		<string>TRACE</string>
 		<key>Scope_orient_a</key>

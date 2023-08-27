@@ -20,7 +20,7 @@
 	</dict>
 	<dict>
 		<key>Buffer_size</key>
-		<string>480</string>
+		<string>479</string>
 		<key>Label</key>
 		<string>TRACE_0</string>
 		<key>P_Label 1</key>
@@ -54,7 +54,7 @@
 	</dict>
 	<dict>
 		<key>Buffer_size</key>
-		<string>480</string>
+		<string>479</string>
 		<key>Label</key>
 		<string>TRACE_1</string>
 		<key>P_Label 1</key>

@@ -105,12 +105,80 @@
 		<string>2</string>
 	</dict>
 	<dict>
+		<key>Buffer_size</key>
+		<string>1920</string>
+		<key>Label</key>
+		<string>TRACE_3</string>
+		<key>P_Label 1</key>
+		<string>time-axis [xyz][-]</string>
+		<key>P_Label 2</key>
+		<string>colour [rgbcmyWB]</string>
+		<key>P_Label 3</key>
+		<string>[en][dis]able</string>
+		<key>P_Label 4</key>
+		<string>[static][dynamic]</string>
+		<key>P_Label 5</key>
+		<string>line type [-_.|tT]</string>
+		<key>P_Label 6</key>
+		<string>line weight</string>
+		<key>P_float 1</key>
+		<string>x</string>
+		<key>P_float 2</key>
+		<string>White</string>
+		<key>P_float 3</key>
+		<string>enable</string>
+		<key>P_float 4</key>
+		<string>static</string>
+		<key>P_float 5</key>
+		<string>-</string>
+		<key>P_float 6</key>
+		<string>1.0</string>
+		<key>Type</key>
+		<string>TRACE</string>
+		<key>mod_No</key>
+		<string>3</string>
+	</dict>
+	<dict>
+		<key>Buffer_size</key>
+		<string>1920</string>
+		<key>Label</key>
+		<string>TRACE_4</string>
+		<key>P_Label 1</key>
+		<string>time-axis [xyz][-]</string>
+		<key>P_Label 2</key>
+		<string>colour [rgbcmyWB]</string>
+		<key>P_Label 3</key>
+		<string>[en][dis]able</string>
+		<key>P_Label 4</key>
+		<string>[static][dynamic]</string>
+		<key>P_Label 5</key>
+		<string>line type [-_.|tT]</string>
+		<key>P_Label 6</key>
+		<string>line weight</string>
+		<key>P_float 1</key>
+		<string>x</string>
+		<key>P_float 2</key>
+		<string>White</string>
+		<key>P_float 3</key>
+		<string>enable</string>
+		<key>P_float 4</key>
+		<string>static</string>
+		<key>P_float 5</key>
+		<string>.</string>
+		<key>P_float 6</key>
+		<string>1.0</string>
+		<key>Type</key>
+		<string>TRACE</string>
+		<key>mod_No</key>
+		<string>4</string>
+	</dict>
+	<dict>
 		<key>Label</key>
 		<string>SCOPE</string>
 		<key>Type</key>
 		<string>SCOPE</string>
 		<key>mod_No</key>
-		<string>3</string>
+		<string>5</string>
 	</dict>
 	<dict>
 		<key>Label</key>
@@ -118,7 +186,7 @@
 		<key>Type</key>
 		<string>SYSTEM</string>
 		<key>mod_No</key>
-		<string>4</string>
+		<string>6</string>
 	</dict>
 </array>
 </plist>
