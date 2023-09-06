@@ -57,8 +57,11 @@ CW signal tone is assumed to be optimally set. (A second NB filter is ~120Hz
 below this, i.e. 480Hz and used as a level reference in the receipt of CW, or in
 the case of FSK, the 'space' frequency.) 
 
-# the .035 adjustment is a 35Hz adjustment specific to using the Wellington KiwiSDR
+
 FREQ=7202 FREQ=`echo "$FREQ-0.800-0.600 -.035" | bc -l` 
+
+(Note: The .035 adjustment is a 35Hz adjustment specific to using the Wellington KiwiSDR.)
+
 
 Then type:
 ./kiwi_nc.py -s 123.255.47.67 -p 8073 -f $FREQ -m iq | ./KiwiSDR_dcdr -r 8 -t 10
