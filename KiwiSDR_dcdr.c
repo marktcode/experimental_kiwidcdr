@@ -87,7 +87,6 @@ struct control {
 	int		testsignal;
 	float	signalVnoise;
 	int		cwFlg; // TRUE for CW decoding 
-	int		spFlg; // TRUE for spectral out
 	float	localosc;
 	float	localoscsv;
 	int		resonantFilterFlag;
@@ -265,7 +264,7 @@ float fcoef15[] = { // smoothing differential FIR filter 31 taps
 	double lpx[FRST_FLTR], lpy[FRST_FLTR], lpu[FRST_FLTR], lpv[FRST_FLTR];
 	double hpx[FRST_FLTR], hpy[FRST_FLTR], hpu[FRST_FLTR], hpv[FRST_FLTR];
 	int		ii = 0, jj = 0, kk = 0, ll = 0, mm = 0, nn = 0, oo = 0, pp = 0, qq = 0;
-	float kdiv = 0.0;
+	float kdiv = 0.0, kfft = 0.0;
 
 
 	double 	Omega ;
@@ -560,7 +559,7 @@ void usage(void)
 	exit(1);
 }
 
-
+#define BUFFER	(600)
 /****************************************************************************/
 /*																			*/
 /*  main																	*/
@@ -573,7 +572,7 @@ int main(int argc, char **argv)
 
 
 	int 		done = 0;
-	short int 	rawinput[2400];
+	short int 	rawinput[BUFFER];
 	int			i = 0, j = 0, k = 0, l = 0, m = 0, n = 0, p = 0;
 	int 		count = 0;
 	short int 	Ibuf[9],Qbuf[9];
@@ -593,7 +592,6 @@ int main(int argc, char **argv)
 	parameters.WordsPerMinute =  25;
 	parameters.IQ_flg = FALSE;
 	parameters.cwFlg = FALSE;
-	parameters.spFlg = FALSE;
 	
  	parameters.localosc=LO; // initialised for 600Hz local oscillator
  	parameters.localoscsv=0.0;
@@ -620,7 +618,7 @@ int main(int argc, char **argv)
 	
 	
 	
-		while ((opt = getopt(argc, argv, "d:r:b:w:t:h:s:c:f")) != -1) {
+		while ((opt = getopt(argc, argv, "d:r:b:w:t:h:s:c:")) != -1) {
 		switch (opt) {
 		case 'r': //  input gain for resonant filter stage
 			parameters.resonantFilterFlag = TRUE;
@@ -632,10 +630,6 @@ int main(int argc, char **argv)
 		case 'c': //  input gain for resonant filter stage
 			if (atoi(optarg) == 1) parameters.cwFlg = TRUE;
 			else  parameters.cwFlg = FALSE;
-			break;
-		case 'f': //  input gain for resonant filter stage
-			if (atoi(optarg) == 1) parameters.spFlg = TRUE;
-			else  parameters.spFlg = FALSE;
 			break;
 		case 'd': // Damping for resonant filter
 			parameters.damper = (float) (atof(optarg)); // should be in the range of .5-10 say default is 1.0
@@ -737,10 +731,10 @@ int main(int argc, char **argv)
 
 
 	while (done != EOF) { // loop
-		done = fread(&rawinput, sizeof (short int), 2400,stdin );
+		done = fread(&rawinput, sizeof (short int), BUFFER,stdin );
 		// done = read(fd, &rawinput, 2 * sizeof (short int) );
 
-		for (count=0; count < 2400; count+=2) {
+		for (count=0; count < BUFFER; count+=2) {
 
 // here we are upsampling
 		//incoming data at 12kHz  sampling rate ... upsample to 48000Hz
@@ -923,6 +917,7 @@ int main(int argc, char **argv)
 
 				// downsampling counter based on WPM rate 
 				kdiv += parameters.WordsPerMinute/18.75; // lets make this the variable rate... at 25WPM  = 4800Hz
+				kfft += 1; // 4800Hz for fft
 			
 //********************** Down to 4800Hz at 25WPM  *********************************
 // In fact the downsampling is variable and tied to the WPM setting. This is a achieved by varying the time increment on kdiv 
@@ -1022,16 +1017,22 @@ int main(int argc, char **argv)
 							}
 						}
 					}
-//********************** outputing I/Q data to fft calculation *******************************
-					if (parameters.spFlg == TRUE){
-						float_IQ[0] = (float) hpy[ii]*128;  // I before resonant filters
-						float_IQ[1] = (float) hpv[ii]*128;	// Q before resonant filters
-						float_IQ[2] = (float) (integ_2_out + integ_11_out)/parameters.attenuate;   //I after resonant filters
-						float_IQ[3] = (float) (integ_3_out + integ_12_out)/parameters.attenuate;	//Q after resonant filters		
-						fwrite(&float_IQ[0], sizeof(float), 4, stdout); fflush (stdout);
-					}
-//*****************************************************							
 					kdiv = 0.0; 
+				}
+				//********************** outputing I/Q data to fft calculation *******************************
+				if (kfft >= 10.0) { //drop another factor  at 25WPM its a factor of 10...  4800Hz resample for gaussian filters 
+					float_IQ[0] = (float) hpy[ii]*1e-3;  // I before resonant filters
+					float_IQ[1] = (float) hpv[ii]*1e-3;	// Q before resonant filters
+					if (parameters.cwFlg == FALSE){
+						float_IQ[2] = (float) (integ_2_out + integ_11_out)*1e-5/parameters.attenuate;   //I after resonant filters
+						float_IQ[3] = (float) (integ_3_out + integ_12_out)*1e-5/parameters.attenuate;	//Q after resonant filters
+					} else {
+						float_IQ[2] = (float) (integ_2_out)*1e-5/parameters.attenuate;   //I after resonant filters
+						float_IQ[3] = (float) (integ_3_out)*1e-5/parameters.attenuate;	//Q after resonant filters					
+					}	
+					fwrite(&float_IQ[0], sizeof(float), 4, stdout); fflush (stdout);
+				//*****************************************************
+					kfft = 0.0; 
 				}
 
 				j+=DWNSAMP;
