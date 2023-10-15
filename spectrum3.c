@@ -1,8 +1,5 @@
-/* to compile on pi:
+/* to compile:
  g++ spectrum3.c -o spectrum3 -lfftw3 -I /usr/local/fftw/include -L /usr/local/fftw/lib; sudo cp spectrum3 /usr/local/bin
- 
- on the mac
- gcc spectrum3.c -o spectrum3 -lfftw3 -I /opt/local/include -L /opt/local/lib; sudo cp spectrum3 /usr/local/bin
  
 outputs frequency on 4800Hz sample rate i/q signal
 */
@@ -15,7 +12,7 @@ outputs frequency on 4800Hz sample rate i/q signal
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include <getopt.h>
+#include "getopt/getopt.h"
 
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -95,8 +92,9 @@ void usage(void)
 int main(int argc, char **argv) {
 	int r, opt;
 
-  	int i=0, k, n, ii, jj, kk, kkk, mm, done = 1, si=0, di=0;
+  	int i=0, k, n, ii, jj, kk, mm, done = 1, si=0, di=0;
 	float 	rawinput[4], scaledisp = .001, gain = 1.0;
+	int	cwflg = FALSE;
 
 
 
@@ -134,7 +132,7 @@ int main(int argc, char **argv) {
 	strcpy(&hostipa[0], "127.0.0.1"); // local host is the default for the rtl_cw process. 
 	strcpy(&hostipb[0], "127.0.0.1"); // local host default for the rtl_cw process. 
 
-	while ((opt = getopt(argc, argv, "sv:r:h:g:")) != -1) {
+	while ((opt = getopt(argc, argv, "sv:r:h:g:c:")) != -1) {
 		switch (opt) {
 		case 's': // line display
 			 output_spectrm_Flag = TRUE;
@@ -146,13 +144,16 @@ int main(int argc, char **argv) {
 			break;
 		case 'r':  
 			output_raw_Flag = TRUE;  
-			scaledisp = exp(((float) (atof(optarg)))*0.230258509)*1e-15; // .001 is the initial default coupling gain
+			scaledisp = exp(((float) (atof(optarg)))*0.230258509)*.001; // .001 is the initial default coupling gain
 			break;
 		case 'h': //host ip
 			strcpy(&hostipb[0], optarg);
 			break;
-		case 'g':  // only used in respect of the thresholding of 
+		case 'g':  
 			gain = exp(((float) (atof(optarg)))*0.230258509); // gain sets spectrum against the ref threshold
+			break;
+		case 'c':  
+			cwflg = (int) atoi(optarg); // cw mode otherwise FSK
 			break;
 
 		default:
@@ -264,16 +265,13 @@ int main(int argc, char **argv) {
 
 
 	ii = jj = kk = mm = 0;
-	kkk = 0;
-
     double max = 0.0;
 	while (done != EOF) { // big loop
 
 // doubling up on the fft to do both the raw IQ and resonant IQ
 // reading Numpoints/4
-
 		while ((ii < NUM_POINTS) && ( jj < NUM_POINTS) && (kk < NUM_POINTS) && ( mm < NUM_POINTS)) {
-			done = fread(&rawinput, sizeof (float), 4,stdin );
+			done = fread(&rawinput, sizeof (float), 4,stdin );											//lets tie the spectral output to the 4800Hz
 
 			
 			shapeii =	(1 - cos(ii*3.1415926/NUM_POINTS) );
@@ -305,45 +303,6 @@ int main(int argc, char **argv) {
 
 //			printf("%d %d %d %d\n",ii,jj,kk,mm); fflush(stdout);
 			ii = ii + 1;
-			kkk = kkk % (NUM_POINTS/2);
-			if (output_smth_Flag == TRUE) {
-				if ((kkk == 0) || (kkk >= NUM_POINTS/2 -2 )) sprintf(message, "%d %d 1e-20 1e-20", kkk, kkk );
-				else sprintf(message, "%d %d %g %g", kkk, kkk, smooth[kkk]*scaledisp, maga[kkk]*scaledisp );
-				if ((numbytes = sendto(sockfdb, &message[0], strlen(message), 0,pb->ai_addr, pb->ai_addrlen)) == -1) {
-					perror("Display UDP error");
-					exit (1);
-				}
-	
-			}
-			else if (output_raw_Flag == TRUE) {
-				if ((kkk == 0) || (kkk >= NUM_POINTS/2 -2 )) sprintf(message, "%d %d 1e-20 1e-20", kkk, kkk);
-				else sprintf(message, "%d %d %g %g", kkk, kkk, maga[kkk]*scaledisp, magb[kkk]*scaledisp);
-				if ((numbytes = sendto(sockfdb, &message[0], strlen(message), 0,pb->ai_addr, pb->ai_addrlen)) == -1) {
-					perror("Display UDP error");
-					exit (1);
-				}
-			}
-			kkk++;
-
-			if (output_smth_Flag == TRUE) { 
-				if ((kkk == 0) || (kkk >= NUM_POINTS/2 -2 )) sprintf(message, "%d %d 1e-20 1e-20", kkk, kkk);
-				else sprintf(message, "%d %d %g %g", kkk, kkk, smooth[kkk]*scaledisp, maga[kkk]*scaledisp );
-				if ((numbytes = sendto(sockfdb, &message[0], strlen(message), 0,pb->ai_addr, pb->ai_addrlen)) == -1) {
-					perror("Display UDP error");
-					exit (1);
-				}
-	
-			}
-			else if (output_raw_Flag == TRUE) {
-				if ((kkk == 0) || (kkk >= NUM_POINTS/2 -2 )) sprintf(message, "%d %d 1e-20 1e-20", kkk, kkk);
-				else sprintf(message, "%d %d %g %g", kkk, kkk, maga[kkk]*scaledisp, magb[kkk]*scaledisp);
-				if ((numbytes = sendto(sockfdb, &message[0], strlen(message), 0,pb->ai_addr, pb->ai_addrlen)) == -1) {
-					perror("Display UDP error");
-					exit (1);
-				}
-			}
-			kkk++;
-			
 		}
 
 //execute appropriate plan
@@ -368,6 +327,7 @@ int main(int argc, char **argv) {
 // compute the magnatude a
 		max = 0;
 		count = 0;
+		Mark = Space = 0.0;
 		for (k = 0; k < NUM_POINTS/2; k++) {
 			j = NUM_POINTS - 1 - k;
 			maga[k] += .9* (resulta[j][REAL] * resulta[j][REAL] +
@@ -392,18 +352,26 @@ int main(int argc, char **argv) {
 			}
 			si = (si + 1) % FIR_LEN;
 			di = (di + 1) % FIR_LEN;
-			// max = max *.95;
+			 max = max *.99;
 			
-			if ((k >=40) && (k <=200)) {//} && (smooth[k] > 100) ) { // only look at data in the range 40-200 = 200Hz-1000Hz
-				if ((diff[k-1] >= 0.0) &&  (diff[k] < 0.0) && (gain*smooth[k] > 50.0) && smooth[k] < 3* maga[k] ) {  /// negative going zero crossing
-						if (count == 0) {	
+			if ((k >=40) && (k <=200)) {    //} && (smooth[k] > 100) ) { // only look at data in the range 40-200 = 200Hz-1000Hz
+
+				if ((diff[k-1] >= 0.0) &&  (diff[k] < 0.0)){ 
+					if (cwflg == TRUE) {
+						if (smooth[k] > max) {
+							max=smooth[k]; 
+							Mark = 4800.0*k/NUM_POINTS;
+						}
+
+					}
+/*					if ((gain*smooth[k] > 50.0) && (smooth[k] < 3* maga[k])) {  /// negative going zero crossing
+						if ((count == 0) && (cwflg == FALSE)) {	
 							Space = 4800.0*k/NUM_POINTS;
-							max=  smooth[k]; 
 	//						printf("%d %gHz %g\n",count, Space, smooth[k] ); fflush(stdout);
 						}
-						else if (count == 1) {
+						else if ((count == 1) || (cwflg == TRUE)) {
 							Mark = 4800.0*k/NUM_POINTS;
-							if (((Mark > 645) || (Mark < 625)) && (640-Mark < 100) && (640-Mark > -100)) { markcount++; adjust+=640-Mark;}
+							if (((Mark > 590) || (Mark < 610)) && (600-Mark < 100) && (600-Mark > -100)) { markcount++; adjust+=600-Mark;}
 							//fprintf(stderr,"-a %gHz\n",640-Mark ); fflush(stderr);
 							// fprintf(stderr,"%gHz\t%gHz\t\t%g\t%g\t%g\t\t%g\n",Space,  Mark, max, smooth[k],maga[k],   Mark - Space ); fflush(stderr);
 							//
@@ -411,37 +379,47 @@ int main(int argc, char **argv) {
 						}
 						count++;
 						if (markcount >= 20) { 
-							//fprintf(stdout,"-a %d\n",(int) (adjust/20.0) ); fflush(stdout);
-							//fprintf(stdout,"%s %d %d\n",message,strlen(message),sockfd ); fflush(stdout);
-							sprintf(message, "-a %d",(int) (adjust/20.0) );
-							if ((numbytes = sendto(sockfda, &message[0], strlen(message), 0,pa->ai_addr, pa->ai_addrlen)) == -1) {
-								perror("Display UDP error");
-								exit (1);
-							}
+//							sprintf(message, "-a %d",(int) (adjust/20.0) );
+//							fprintf(stderr,"%s %d %d\n",message,strlen(message) ); fflush(stderr);
+//							sprintf(message, "-a %d",(int) (adjust/20.0) );
+//							if (0 != (int) (adjust/20)) {
+//								if ((numbytes = sendto(sockfda, &message[0], strlen(message), 0,pa->ai_addr, pa->ai_addrlen)) == -1) {
+//									perror("Display UDP error");
+//									exit (1);
+//								}
+//							}
 							markcount = 0;
 							adjust = 0;
 						}
+					}
+					*/
 				}
 			}
-/*			if (output_smth_Flag == TRUE) { 
-	//			printf("%d %d %g %g\n", k, k, smooth[k], maga[k]); fflush(stdout); 
-				sprintf(message, "%d %d %g %g", k, k, smooth[k]*scaledisp, maga[k]*scaledisp );
-				if ((numbytes = sendto(sockfdb, &message[0], strlen(message), 0,pb->ai_addr, pb->ai_addrlen)) == -1) {
-					perror("Display UDP error");
-					exit (1);
-				}
+//			if ((k ==200) && (max > gain))
+//				fprintf(stderr,"freq %d %f \n", (int) Mark, max ); fflush(stderr);
+
+			
+			
+			if ((k >=0) && (k<240)){
+				if (output_smth_Flag == TRUE) { 
+		//			printf("%d %d %g %g\n", k, k, smooth[k], maga[k]); fflush(stdout); 
+					sprintf(message, "%d %d %g %g", k, k, diff[k]*scaledisp, maga[k]*scaledisp );
+					if ((numbytes = sendto(sockfdb, &message[0], strlen(message), 0,pb->ai_addr, pb->ai_addrlen)) == -1) {
+						perror("Display UDP error");
+						exit (1);
+					}
 		
-			}
-			else if (output_raw_Flag == TRUE) {
-				//printf("%d %d %g %g\n", k, k, maga[k], magb[k]); fflush(stdout);
-				sprintf(message, "%d %d %g %g", k, k, maga[k]*scaledisp, magb[k]*scaledisp);
-				if ((numbytes = sendto(sockfdb, &message[0], strlen(message), 0,pb->ai_addr, pb->ai_addrlen)) == -1) {
-					perror("Display UDP error");
-					exit (1);
+				}
+				else if (output_raw_Flag == TRUE) {
+					//printf("%d %d %g %g\n", k, k, maga[k], magb[k]); fflush(stdout);
+					sprintf(message, "%d %d %g %g", k, k, maga[k]*scaledisp, magb[k]*scaledisp);
+					if ((numbytes = sendto(sockfdb, &message[0], strlen(message), 0,pb->ai_addr, pb->ai_addrlen)) == -1) {
+						perror("Display UDP error");
+						exit (1);
+					}
 				}
 			}	
-*/
-		} 
+		}    
 	}
 	fftw_destroy_plan(plan1a);
 	fftw_destroy_plan(plan2a);
