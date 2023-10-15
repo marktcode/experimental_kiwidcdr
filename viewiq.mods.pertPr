@@ -4,7 +4,7 @@
 <array>
 	<dict>
 		<key>Buffer_size</key>
-		<string>1920</string>
+		<string>960</string>
 		<key>Label</key>
 		<string>TRACE_0</string>
 		<key>P_Label 1</key>
@@ -38,7 +38,7 @@
 	</dict>
 	<dict>
 		<key>Buffer_size</key>
-		<string>1920</string>
+		<string>960</string>
 		<key>Label</key>
 		<string>TRACE_1</string>
 		<key>P_Label 1</key>
@@ -72,7 +72,7 @@
 	</dict>
 	<dict>
 		<key>Buffer_size</key>
-		<string>1920</string>
+		<string>960</string>
 		<key>Label</key>
 		<string>TRACE_2</string>
 		<key>P_Label 1</key>
@@ -106,7 +106,7 @@
 	</dict>
 	<dict>
 		<key>Buffer_size</key>
-		<string>1920</string>
+		<string>960</string>
 		<key>Label</key>
 		<string>TRACE_3</string>
 		<key>P_Label 1</key>
@@ -140,7 +140,7 @@
 	</dict>
 	<dict>
 		<key>Buffer_size</key>
-		<string>1920</string>
+		<string>960</string>
 		<key>Label</key>
 		<string>TRACE_4</string>
 		<key>P_Label 1</key>
@@ -164,7 +164,7 @@
 		<key>P_float 4</key>
 		<string>static</string>
 		<key>P_float 5</key>
-		<string>.</string>
+		<string>-</string>
 		<key>P_float 6</key>
 		<string>1.0</string>
 		<key>Type</key>
