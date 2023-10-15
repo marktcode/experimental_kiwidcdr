@@ -152,7 +152,7 @@
 		<key>G3</key>
 		<real>0.79044598340988159</real>
 		<key>G4</key>
-		<string>12</string>
+		<real>6</real>
 		<key>G5</key>
 		<string>6</string>
 		<key>G6</key>
@@ -290,7 +290,7 @@
 		<key>Title</key>
 		<string>SPECTRUM</string>
 		<key>Width_X</key>
-		<string>550</string>
+		<string>275</string>
 		<key>Width_Y</key>
 		<string>275</string>
 		<key>a_out</key>

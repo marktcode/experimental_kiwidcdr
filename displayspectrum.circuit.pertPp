@@ -42,7 +42,7 @@
 		<key>Input_name</key>
 		<string>out-x</string>
 		<key>Offset</key>
-		<string>-12</string>
+		<string>-6</string>
 		<key>Output1_module</key>
 		<string>INPUT_1</string>
 		<key>Output1_name</key>
@@ -58,7 +58,7 @@
 		<key>Input_name</key>
 		<string>out-x</string>
 		<key>Offset</key>
-		<string>-12</string>
+		<string>-6</string>
 		<key>Output1_module</key>
 		<string>INPUT_1</string>
 		<key>Output1_name</key>
