@@ -624,10 +624,10 @@ int main(int argc, char **argv)
 			parameters.resonantFilterFlag = TRUE;
 			parameters.attenuate = exp(((float) (atof(optarg)))*0.230258509)*.001; // .001 is the initial default coupling gain
 			break;
-		case 'b': //  input gain for resonant filter stage
+		case 'b': 
 			parameters.balance = atof(optarg); // default is 1.0 
 			break;
-		case 'c': //  input gain for resonant filter stage
+		case 'c': 
 			if (atoi(optarg) == 1) parameters.cwFlg = TRUE;
 			else  parameters.cwFlg = FALSE;
 			break;
