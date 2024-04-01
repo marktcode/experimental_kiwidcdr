@@ -452,7 +452,7 @@ void *controls_loop(void *threadarg)
 						i++;
 					} //else toofewargs ();
 				}
-				else if ( !strcmp(newargv.we_wordv[i], "-n") ) { //adjust the local oscillator
+				else if ( !strcmp(newargv.we_wordv[i], "-n") ) { //signal to noise
 					if (i+1 <= newargv.we_wordc) {
 						sscanf(newargv.we_wordv[i + 1], "%f", &tempfloat); // frequency
 						if (tempfloat !=0) {
@@ -492,7 +492,7 @@ void *controls_loop(void *threadarg)
 						i++;
 					} //else toofewargs ();
 				}
-				else if ( !strcmp(newargv.we_wordv[i], "-b") ) {  //resonant filter
+				else if ( !strcmp(newargv.we_wordv[i], "-b") ) { // resonant filter pair balance
 					if (i+1 <= newargv.we_wordc) {
 						sscanf(newargv.we_wordv[i + 1], "%f", &tempfloat); // gain
 						if ((tempfloat <.5) || (tempfloat > 1.5)) {
